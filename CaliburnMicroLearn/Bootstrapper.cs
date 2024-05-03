@@ -13,13 +13,13 @@ public class Bootstrapper : BootstrapperBase
 
     /// <summary>
     /// 启动时显示的页面
-    /// 这里显示的是MainViewModel
+    /// 这里显示的是ShellViewModel
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     protected override async void OnStartup(object sender, StartupEventArgs e)
     {
-        await DisplayRootViewForAsync(typeof(MainViewModel));
+        await DisplayRootViewForAsync(typeof(ShellViewModel));
     }
 }
 

@@ -7,7 +7,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\MainView.xaml">
+    <Page Update="Views\ShellView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

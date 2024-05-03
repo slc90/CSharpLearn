@@ -1,5 +1,11 @@
-﻿namespace CaliburnMicroLearn.ViewModels;
+﻿using Caliburn.Micro;
 
-public class MainViewModel
+namespace CaliburnMicroLearn.ViewModels;
+
+public class MainViewModel : Screen
 {
+    public MainViewModel()
+    {
+
+    }
 }

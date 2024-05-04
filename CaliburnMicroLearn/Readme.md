@@ -122,3 +122,14 @@ public class ShellViewModel : Screen
     }
 }
 ```
+# 引入Log  
+1.使用nuget安装  
+![](./Picture/Install_log4net.png)
+2.配置  
+文档见(https://www.cnblogs.com/yaopengfei/p/9428206.html)，配置后的文件为log4net.config  
+3.日志输出格式  
+[官方文档](https://logging.apache.org/log4net/log4net-1.2.13/release/sdk/log4net.Layout.PatternLayout.html)  
+4.封装  
+LoggerUtils文件夹中放和Logger相关的文件。log4net.config是日志的配置文件，要把属性设置为embed resource;Logger.cs是对log4net自带的
+方法的封装。
+![](./Picture/log4net_config.png)

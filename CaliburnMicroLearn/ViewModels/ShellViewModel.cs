@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
+using CaliburnMicroLearn.LoggerUtils;
 using PropertyChanged;
-using System.Windows;
 
 namespace CaliburnMicroLearn.ViewModels;
 
@@ -11,6 +11,19 @@ public class ShellViewModel : Screen
 
     public void OnXXXChanged()
     {
-        MessageBox.Show("123");
+        Logger.Debug("Debug");
+        Logger.Info("Info");
+        Logger.Warn("Warn");
+        Logger.Error("Error");
+        try
+        {
+            var x = 1;
+            var y = 0;
+            var z = x / y;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Error", ex);
+        }
     }
 }

@@ -1,39 +1,27 @@
 ﻿using Caliburn.Micro;
-using CaliburnMicroLearn.LoggerUtils;
+using CaliburnMicroLearn.UserControl.ViewModels;
 
 namespace CaliburnMicroLearn.ViewModels;
 
-public class ShellViewModel : Screen
+public class ShellViewModel : Conductor<IScreen>
 {
-    /// <summary>
-    /// 勾选或取消勾选CheckBox后属性自动变化
-    /// </summary>
-    public bool TestCheckBox { get; set; }
+    UserControl1ViewModel UserControl1ViewModel = new();
 
-    public void OnTestCheckBoxChanged()
+    UserControl2ViewModel UserControl2ViewModel = new();
+
+    /// <summary>
+    /// 点击按钮SwitchToActiveItem1触发
+    /// </summary>
+    public void SwitchToActiveItem1()
     {
-        Logger.Debug($"IsChecked:{TestCheckBox}");
+        ActivateItemAsync(UserControl1ViewModel);
     }
 
     /// <summary>
-    /// 绑定到ListView的属性
+    /// 点击按钮SwitchToActiveItem2触发
     /// </summary>
-    public BindableCollection<string> Names { get; set; } = ["Name1", "Name2", "Name3"];
-
-    /// <summary>
-    /// 点击ListView中的Item后触发，输出被点击的Item的内容
-    /// </summary>
-    /// <param name="name"></param>
-    public void ListViewItemClick(string name)
+    public void SwitchToActiveItem2()
     {
-        Logger.Debug(name);
-    }
-
-    /// <summary>
-    /// 点击按钮后触发
-    /// </summary>
-    public void TestButton()
-    {
-        Logger.Debug("Test");
+        ActivateItemAsync(UserControl2ViewModel);
     }
 }

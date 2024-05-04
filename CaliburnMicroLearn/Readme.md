@@ -189,4 +189,88 @@ LoggerUtils文件夹中放和Logger相关的文件。log4net.config是日志的�
         Logger.Debug(name);
     }
 ```  
-完整的有关数据和事件绑定的内容见(https://caliburnmicro.com/documentation/actions)
+完整的有关数据和事件绑定的内容见(https://caliburnmicro.com/documentation/actions)  
+# Screen和Conductor
+Screen和Conductor可以"比作"是窗口和窗口管理器，对于一个窗口，一般会有各种自动触发的事件，比如窗口显示、窗口关闭事件，
+而窗口管理器就是一个Collection，其中放了很多个窗口，需要对这些窗口进行状态的管理。当然，实际上Screen并不是窗口，因为
+像窗口显示这种事件是ViewAware这个类实现的，比如OnViewLoaded方法。Screen是实现了IScreen这个接口，它的生命周期是Activate、
+DeActivate、CanClose和TryClose。Conductor这个类分成以下3种情况:
+* 只有一个ActiveItem  
+    这个例子中，让ShellViewModel继承自`Conductor<IScreen>`，然后在ShellViewModel中放一个`ContentControl`，
+    它的Name必须是ActiveItem，这是CaliburnMicro中规定的(可以看到ConductorBaseWithActiveItem<T>类中有个属性就是叫ActiveItem)
+    ```xaml
+    <Window x:Class="CaliburnMicroLearn.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CaliburnMicroLearn.Views"
+        xmlns:cal="http://caliburnmicro.com"
+        mc:Ignorable="d"
+        Title="CaliburnMicro"
+        xmlns:viewModels="clr-namespace:CaliburnMicroLearn.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,IsDesignTimeCreatable=True}"
+        Height="450"
+        Width="800">
+    <StackPanel Orientation="Vertical">
+        <ContentControl x:Name="ActiveItem"></ContentControl>
+        <Button x:Name="SwitchToActiveItem1"
+                Content="SwitchToActiveItem1"></Button>
+        <Button x:Name="SwitchToActiveItem2"
+                Content="SwitchToActiveItem2"></Button>
+    </StackPanel>
+    </Window>
+    ```
+    然后新建一个文件夹放UserControl，其中放2个不同的ViewModel，然后在ShellViewModel进行切换。具体方法和之前创建View、ViewModel一样，
+    名字要一致，因为这里Conductor中的泛型为IScreen，所以新建的2个ViewModel要继承自Screen(如果不需生命周期，那只需要继承自ViewAware应该就行)。
+    ShellViewModel中的代码如下，只有用来切换的功能。
+    ```C#
+    using Caliburn.Micro;
+    using CaliburnMicroLearn.UserControl.ViewModels;
+
+    namespace CaliburnMicroLearn.ViewModels;
+
+    public class ShellViewModel : Conductor<IScreen>
+    {
+        UserControl1ViewModel UserControl1ViewModel = new();
+
+        UserControl2ViewModel UserControl2ViewModel = new();
+
+        /// <summary>
+        /// 点击按钮SwitchToActiveItem1触发
+        /// </summary>
+        public void SwitchToActiveItem1()
+        {
+            ActivateItemAsync(UserControl1ViewModel);
+        }
+
+        /// <summary>
+        /// 点击按钮SwitchToActiveItem2触发
+        /// </summary>
+        public void SwitchToActiveItem2()
+        {
+            ActivateItemAsync(UserControl2ViewModel);
+        }
+    }
+    ```
+    在UserControl1View和UserControl2View中各自放了一个按钮，但是显示的内容不同；对应的ViewModel则是重写了
+    OnActivateAsync、OnDeactivateAsync、CanCloseAsync、TryCloseAsync四个方法，增加了Log输出，用来看切
+    换时到底触发了什么。
+    程序刚启动时还没有激活任何一个，此时的状态如下，终端什么也没显示:
+![](./Picture/BeforeActive.png)
+    然后点击SwitchToActiveItem1，激活UserControl1ViewModel,从终端可以看到触发了OnActive这个事件:
+![](./Picture/ActiveItem1.png)
+    然后点击SwitchToActiveItem2，激活UserControl2ViewModel，从终端可以看到先触发了UserControl1ViewModel
+    的CanClose和OnDeactivate事件，然后触发了UserControl2ViewModel的OnActive事件
+![](./Picture/ActiveItem2.png)
+    此时再次点击SwitchToActiveItem1，又激活了UserControl1ViewModel，先触发UserControl2ViewModel的CanClose
+    和OnDeactive事件，然后触发UserControl1ViewModel的Active事件
+![](./Picture/ActiveItem1Again.png)
+    最后在UserControl1ViewModel已经被激活的情况下点击SwitchToActiveItem1，发现没什么反应，终端也没有输出信息，符合预期
+* 有多个ActionItem，但同时只有1个处于Active中  
+    和第一种的情况有2个区别: 
+    1. xaml中不是放ContentControl，而是放一个ItemsControl，x:Name必须为Items 
+    2. 当Items中的正处于Active的Item被DeActive或是Close时，需要从剩下的Item中自动找一个Item来Active
+* 有多个ActionItem，同时可以有多个Item处于Active中  
+    和第2种情况类似  
+完整文档见(https://caliburnmicro.com/documentation/composition)

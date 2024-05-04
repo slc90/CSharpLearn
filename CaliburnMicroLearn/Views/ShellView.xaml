@@ -11,24 +11,11 @@
         d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,IsDesignTimeCreatable=True}"
         Height="450"
         Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <Button x:Name="TestButton"
-                Grid.Row="0"></Button>
-        <CheckBox x:Name="TestCheckBox"
-                  Grid.Row="1"></CheckBox>
-        <ListView ItemsSource="{Binding Names}"
-                  Grid.Row="2">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Button Content="{Binding}"
-                            cal:Message.Attach="[Click]=[ListViewItemClick($dataContext)]"></Button>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <ContentControl x:Name="ActiveItem"></ContentControl>
+        <Button x:Name="SwitchToActiveItem1"
+                Content="SwitchToActiveItem1"></Button>
+        <Button x:Name="SwitchToActiveItem2"
+                Content="SwitchToActiveItem2"></Button>
+    </StackPanel>
 </Window>

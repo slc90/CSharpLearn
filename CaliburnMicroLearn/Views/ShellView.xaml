@@ -4,11 +4,31 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CaliburnMicroLearn.Views"
+        xmlns:cal="http://caliburnmicro.com"
         mc:Ignorable="d"
         Title="CaliburnMicro"
+        xmlns:viewModels="clr-namespace:CaliburnMicroLearn.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,IsDesignTimeCreatable=True}"
         Height="450"
         Width="800">
     <Grid>
-        <CheckBox IsChecked="{Binding IsChecked}"></CheckBox>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button x:Name="TestButton"
+                Grid.Row="0"></Button>
+        <CheckBox x:Name="TestCheckBox"
+                  Grid.Row="1"></CheckBox>
+        <ListView ItemsSource="{Binding Names}"
+                  Grid.Row="2">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding}"
+                            cal:Message.Attach="[Click]=[ListViewItemClick($dataContext)]"></Button>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Window>

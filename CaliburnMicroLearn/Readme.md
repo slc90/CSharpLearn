@@ -132,4 +132,61 @@ public class ShellViewModel : Screen
 4.封装  
 LoggerUtils文件夹中放和Logger相关的文件。log4net.config是日志的配置文件，要把属性设置为embed resource;Logger.cs是对log4net自带的
 方法的封装。
-![](./Picture/log4net_config.png)
+![](./Picture/log4net_config.png)  
+# 数据和事件绑定
+1.Button和CheckBox之类在xaml中用x:Name设置名字，然后在ViewModel中创建一个同名的属性或函数，就能自动"关联"。例子如下:
+```xaml
+        <Button x:Name="TestButton"
+                Grid.Row="0"></Button>
+        <CheckBox x:Name="TestCheckBox"
+                  Grid.Row="1"></CheckBox>
+```
+```C#
+    /// <summary>
+    /// 勾选或取消勾选CheckBox后属性自动变化
+    /// </summary>
+    public bool TestCheckBox { get; set; }
+
+    public void OnTestCheckBoxChanged()
+    {
+        Logger.Debug($"IsChecked:{TestCheckBox}");
+    }
+
+    /// <summary>
+    /// 点击按钮后触发
+    /// </summary>
+    public void TestButton()
+    {
+        Logger.Debug("Test");
+    }
+```  
+按照上面这样设置的话，当在UI上点击按钮，就会自动触发ViewModel中的TestButton方法；勾选或取消勾选CheckBox，相关联的TestCheckBox属性也会自动变化  
+2.ItemsControl中各个Item的事件绑定到同一个函数，以下代码就是当点击了ListView中每个Item时，自动触发ViewModel中的ListViewItemClick方法，
+并把被点击的Item的内容作为参数传进去。这非常方便，View和ViewModel进行了分离，ViewModel中不需要拿到View中的Control。
+```xaml
+        <ListView ItemsSource="{Binding Names}"
+                  Grid.Row="2">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding}"
+                            cal:Message.Attach="[Click]=[ListViewItemClick($dataContext)]"></Button>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+```
+```C#
+    /// <summary>
+    /// 绑定到ListView的属性
+    /// </summary>
+    public BindableCollection<string> Names { get; set; } = ["Name1", "Name2", "Name3"];
+
+    /// <summary>
+    /// 点击ListView中的Item后触发，输出被点击的Item的内容
+    /// </summary>
+    /// <param name="name"></param>
+    public void ListViewItemClick(string name)
+    {
+        Logger.Debug(name);
+    }
+```  
+完整的有关数据和事件绑定的内容见(https://caliburnmicro.com/documentation/actions)

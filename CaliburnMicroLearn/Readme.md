@@ -499,3 +499,9 @@ public class UserControl2ViewModel : Screen
 ```
 然后运行Debug文件夹下的程序(在VS中调试会先停在错误处，需要手动继续程序),会看到终端的信息:
 ![](./Picture/UnHandlerException.png)
+# 创建项目模板
+因为CaliburnMicro框架、Mef、Logger、还有很多重复的设置在项目开始时都是一样的，所以可以
+直接存成一个模板，以后再创建项目时直接套用即可，注意创建时要删除无关的那些内容。
+![](./Picture/CreateTemplate.png)
+之后跟着设置走即可，下次再创建项目时就会有选项了:
+![](./Picture/CaliburnMicroTemplate.png)

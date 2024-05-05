@@ -16,18 +16,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="LoggerUtils\log4net.config" />
+		<None Remove="LoggerUtils\log4net.config" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="LoggerUtils\log4net.config">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </EmbeddedResource>
+		<EmbeddedResource Include="LoggerUtils\log4net.config">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Caliburn.Micro" Version="4.0.212" />
 		<PackageReference Include="log4net" Version="2.0.17" />
 		<PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
+		<PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
 	</ItemGroup>
 </Project>

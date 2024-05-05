@@ -17,5 +17,7 @@
                 Content="SwitchToActiveItem1"></Button>
         <Button x:Name="SwitchToActiveItem2"
                 Content="SwitchToActiveItem2"></Button>
+        <Button  x:Name="NewDialog"
+                 Content="NewDialog"></Button>
     </StackPanel>
 </Window>

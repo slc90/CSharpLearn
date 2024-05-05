@@ -133,6 +133,17 @@ public class ShellViewModel : Screen
 LoggerUtils文件夹中放和Logger相关的文件。log4net.config是日志的配置文件，要把属性设置为embed resource;Logger.cs是对log4net自带的
 方法的封装。
 ![](./Picture/log4net_config.png)  
+5.修改工程配置
+```xml
+	<!--Debug时把Console也打开，可以直接看Log-->
+	<PropertyGroup Condition="'$(Configuration)' == 'DEBUG'">
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<!--Release时不要Console-->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<OutputType>WinExe</OutputType>
+	</PropertyGroup>
+```
 # 数据和事件绑定
 1.Button和CheckBox之类在xaml中用x:Name设置名字，然后在ViewModel中创建一个同名的属性或函数，就能自动"关联"。例子如下:
 ```xaml
@@ -273,4 +284,218 @@ DeActivate、CanClose和TryClose。Conductor这个类分成以下3种情况:
     2. 当Items中的正处于Active的Item被DeActive或是Close时，需要从剩下的Item中自动找一个Item来Active
 * 有多个ActionItem，同时可以有多个Item处于Active中  
     和第2种情况类似  
+
 完整文档见(https://caliburnmicro.com/documentation/composition)
+# 容器IoC
+容器中可以放单例，然后在程序的任意地方找到的都是同一个实例，防止一层一层传参，方便维护程序。
+1. 配置  
+    参考(https://gist.github.com/dbuksbaum/542762)。在启动文件Bootstrapper中重写基类的Configure方法，这里使用的IoC是MEF中的，所以需要安装System.ComponentModel.Composition(VS会提示)。
+    这里在容器中放入了CaliburnMicro自己的EventAggregator和WindowManager
+    ```C#
+    private CompositionContainer? _container;
+
+    /// <summary>
+    /// 配置IoC
+    /// </summary>
+    protected override void Configure()
+    {
+        _container = new CompositionContainer(
+            new AggregateCatalog(AssemblySource.Instance.Select(x => new AssemblyCatalog(x)).OfType<ComposablePartCatalog>()));
+        var batch = new CompositionBatch();
+        //把CaliburnMicro的WindowManager放入容器
+        batch.AddExportedValue<IWindowManager>(new WindowManager());
+        //把CaliburnMicro的EventAggregator放入容器
+        batch.AddExportedValue<IEventAggregator>(new EventAggregator());
+        batch.AddExportedValue(_container);
+        _container.Compose(batch);
+    }
+
+    protected override void BuildUp(object instance)
+    {
+        _container!.SatisfyImportsOnce(instance);
+    }
+
+    protected override object GetInstance(Type service, string key)
+    {
+        string contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(service) : key;
+        var exports = _container!.GetExportedValues<object>(contract);
+        if (exports.Any())
+        {
+            return exports.First();
+        }
+
+        throw new Exception($"Could not locate any instances of contract {contract}.");
+    }
+
+    protected override IEnumerable<object> GetAllInstances(Type service)
+    {
+        return _container!.GetExportedValues<object>(AttributedModelServices.GetContractName(service));
+    }
+
+    protected override IEnumerable<Assembly> SelectAssemblies()
+    {
+        return [Assembly.GetExecutingAssembly()];
+    }
+    ```
+2. EventAggregator
+在容器中加入了EventAggregator之后，全局都能使用`IoC.Get<IEventAggregator>()`来找到。例如，在UserControl1ViewModel中监听UserControl2ViewModel发出的事件:
+UserControl1ViewModel中需要监听事、取消事件以及处理收到的事件
+```C#
+   public class UserControl1ViewModel : Screen, IHandle<EventAggregatorTest>
+{
+    /// <summary>
+    /// 使用IoC找到全局的事件聚合器
+    /// </summary>
+    private readonly IEventAggregator _eventAggregator = IoC.Get<IEventAggregator>();
+
+    /// <summary>
+    /// 初始化ViewModel时监听事件聚合器
+    /// </summary>
+    public UserControl1ViewModel()
+    {
+        //在后台线程监听
+        _eventAggregator.SubscribeOnBackgroundThread(this);
+    }
+
+    protected override Task OnActivateAsync(CancellationToken cancellationToken)
+    {
+        Logger.Debug("ActiveItem1 OnActivateAsync");
+        return base.OnActivateAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Deactivate时把事件监听也取消掉
+    /// </summary>
+    /// <param name="close"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+    {
+        Logger.Debug("ActiveItem1 OnDeactivateAsync");
+        _eventAggregator.Unsubscribe(this);
+        return base.OnDeactivateAsync(close, cancellationToken);
+    }
+
+    public override Task<bool> CanCloseAsync(CancellationToken cancellationToken = default)
+    {
+        Logger.Debug("ActiveItem1 CanCloseAsync");
+        return base.CanCloseAsync(cancellationToken);
+    }
+
+    public override Task TryCloseAsync(bool? dialogResult = null)
+    {
+        Logger.Debug("ActiveItem1 TryCloseAsync");
+        return base.TryCloseAsync(dialogResult);
+    }
+
+    /// <summary>
+    /// 收到EventAggregatorTest时触发
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public Task HandleAsync(EventAggregatorTest message, CancellationToken cancellationToken)
+    {
+        Logger.Debug($"Message:{message.Message}");
+        return Task.CompletedTask;
+    }
+}
+```  
+UserControl2ViewModel中则是发出事件,先定义一个用于事件发送的类:
+```C#
+public class EventAggregatorTest(string message)
+{
+    public string Message { get; set; } = message;
+}
+```
+然后在UserControl2ViewModel激活时发出事件:  
+```C#
+public class UserControl2ViewModel : Screen
+{
+    private readonly IEventAggregator _eventAggregator = IoC.Get<IEventAggregator>();
+
+    /// <summary>
+    /// 在激活时发出事件
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    protected override Task OnActivateAsync(CancellationToken cancellationToken)
+    {
+        Logger.Debug("ActiveItem2 OnActivateAsync");
+        _eventAggregator.PublishOnBackgroundThreadAsync(new EventAggregatorTest("Test"));
+        return base.OnActivateAsync(cancellationToken);
+    }
+
+    protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+    {
+        Logger.Debug("ActiveItem2 OnDeactivateAsync");
+        return base.OnDeactivateAsync(close, cancellationToken);
+    }
+
+    public override Task<bool> CanCloseAsync(CancellationToken cancellationToken = default)
+    {
+        Logger.Debug("ActiveItem2 CanCloseAsync");
+        return base.CanCloseAsync(cancellationToken);
+    }
+
+    public override Task TryCloseAsync(bool? dialogResult = null)
+    {
+        Logger.Debug("ActiveItem2 TryCloseAsync");
+        return base.TryCloseAsync(dialogResult);
+    }
+}
+```
+从终端可以看出确实是在UserControl2ViewModel中发出的事件，此时线程为主线程(线程号为1)。然后在UserControl1ViewModel中
+监听到了事件并在终端输出了内容:Test，此时的线程为后台线程(线程号为7)，这和预期的一致。
+![](./Picture/EventAggregator.png)
+3. WindowManager  
+有时除了主窗口，还需要弹出一些其他的窗口，这就要用到WindowManager。先创建一个Window，就在UserControl文件夹下创建。
+![](./Picture/Dialog.png)
+然后在ShellView.xaml中加入一个按钮用来弹出窗口，接着在ShellViewModel加入触发的函数以及WindowManager
+```xaml
+        <Button  x:Name="NewDialog"
+                 Content="NewDialog"></Button>
+```
+```C#
+    /// <summary>
+    /// CaliburnMicro的WindowManager，可以用来显示其他Window
+    /// </summary>
+    private readonly IWindowManager _windowManager = IoC.Get<IWindowManager>();
+
+    /// <summary>
+    /// 弹出一个模态窗口
+    /// </summary>
+    public void NewDialog()
+    {
+        _windowManager.ShowDialogAsync(new DialogViewModel());
+    }
+```
+# 程序级的未处理错误
+尽管我们希望在程序发布前处理掉所有Bug，但实际总会有各种Bug在程序发布后仍然存在，所以需要一种机制来记录那些未被处理的错误。
+在Bootstrapper中重写OnUnhandledException方法,这里只是输出一下Log:
+```C#
+    /// <summary>
+    /// 程序级的未处理错误
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    protected override void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        Logger.Error("未处理错误", e.Exception);
+    }
+```
+然后故意在ShellViewModel中增加一个除0的错误：
+```C#
+    /// <summary>
+    /// 弹出一个模态窗口
+    /// </summary>
+    public void NewDialog()
+    {
+        var x = 1;
+        var y = 0;
+        var z = x / y;
+        _windowManager.ShowDialogAsync(new DialogViewModel());
+    }
+```
+然后运行Debug文件夹下的程序(在VS中调试会先停在错误处，需要手动继续程序),会看到终端的信息:
+![](./Picture/UnHandlerException.png)

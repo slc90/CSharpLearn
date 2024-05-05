@@ -337,6 +337,14 @@ DeActivate、CanClose和TryClose。Conductor这个类分成以下3种情况:
         return [Assembly.GetExecutingAssembly()];
     }
     ```
+    设置完IoC之后ShellViewModel要使用Mef导出，这样IoC中才能找到这个类的实例
+    ```C#
+    /// <summary>
+    /// MEF导出
+    /// </summary>
+    [Export]
+    public class ShellViewModel : Conductor<IScreen>
+    ```
 2. EventAggregator
 在容器中加入了EventAggregator之后，全局都能使用`IoC.Get<IEventAggregator>()`来找到。例如，在UserControl1ViewModel中监听UserControl2ViewModel发出的事件:
 UserControl1ViewModel中需要监听事、取消事件以及处理收到的事件

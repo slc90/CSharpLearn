@@ -6,6 +6,4 @@ namespace WPFCustomControl.ViewModels;
 [Export]
 public class ShellViewModel : Conductor<IScreen>
 {
-
 }
-

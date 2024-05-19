@@ -25,9 +25,10 @@ public class Logger
     /// <param name="msg">具体的log信息</param>
     /// <param name="callerMember">调用的函数名字</param>
     /// <param name="callerLineNumber">调用的具体行数</param>
-    public static void Debug(string msg, [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
+    public static void Debug(string msg, [CallerFilePath] string callerFile = "",
+        [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
     {
-        LogManager.GetLogger(callerMember).Debug($"[line:{callerLineNumber}][{msg}]");
+        LogManager.GetLogger(callerFile.Split('.')[^2].Split('\\')[^1] + ":" + callerMember + ":" + callerLineNumber).Debug(msg);
     }
 
     /// <summary>
@@ -36,9 +37,10 @@ public class Logger
     /// <param name="msg">具体的log信息</param>
     /// <param name="callerMember">调用的函数名字</param>
     /// <param name="callerLineNumber">调用的具体行数</param>
-    public static void Info(string msg, [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
+    public static void Info(string msg, [CallerFilePath] string callerFile = "",
+        [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
     {
-        LogManager.GetLogger(callerMember).Info($"[line:{callerLineNumber}][{msg}]");
+        LogManager.GetLogger(callerFile.Split('.')[^2].Split('\\')[^1] + ":" + callerMember + ":" + callerLineNumber).Info(msg);
     }
 
     /// <summary>
@@ -47,9 +49,10 @@ public class Logger
     /// <param name="msg">具体的log信息</param>
     /// <param name="callerMember">调用的函数名字</param>
     /// <param name="callerLineNumber">调用的具体行数</param>
-    public static void Warn(string msg, [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
+    public static void Warn(string msg, [CallerFilePath] string callerFile = "",
+        [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
     {
-        LogManager.GetLogger(callerMember).Warn($"[line:{callerLineNumber}][{msg}]");
+        LogManager.GetLogger(callerFile.Split('.')[^2].Split('\\')[^1] + ":" + callerMember + ":" + callerLineNumber).Warn(msg);
     }
 
     /// <summary>
@@ -58,9 +61,10 @@ public class Logger
     /// <param name="msg">具体的log信息</param>
     /// <param name="callerMember">调用的函数名字</param>
     /// <param name="callerLineNumber">调用的具体行数</param>
-    public static void Error(string msg, [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
+    public static void Error(string msg, [CallerFilePath] string callerFile = "",
+        [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
     {
-        LogManager.GetLogger(callerMember).Error($"[line:{callerLineNumber}][{msg}]");
+        LogManager.GetLogger(callerFile.Split('.')[^2].Split('\\')[^1] + ":" + callerMember + ":" + callerLineNumber).Error(msg);
     }
 
     /// <summary>
@@ -70,9 +74,9 @@ public class Logger
     /// <param name="e">抛的异常</param>
     /// <param name="callerMember">调用的函数名字</param>
     /// <param name="callerLineNumber">调用的具体行数</param>
-    public static void Error(string msg, Exception e, [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
+    public static void Error(string msg, Exception e, [CallerFilePath] string callerFile = "",
+        [CallerMemberName] string callerMember = "", [CallerLineNumber] int callerLineNumber = 0)
     {
-        LogManager.GetLogger(callerMember).Error($"[line:{callerLineNumber}][{msg}]", e);
+        LogManager.GetLogger(callerFile.Split('.')[^2].Split('\\')[^1] + ":" + callerMember + ":" + callerLineNumber).Error(msg, e);
     }
 }
-

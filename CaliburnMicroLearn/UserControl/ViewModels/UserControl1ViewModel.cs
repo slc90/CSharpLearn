@@ -62,4 +62,3 @@ public class UserControl1ViewModel : Screen, IHandle<EventAggregatorTest>
         return Task.CompletedTask;
     }
 }
-

@@ -7,10 +7,10 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="CustomControls\Styles\RWindowStyle.xaml">
+    <Page Update="Themes\Styles\CustomWindowStyle.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="CustomControls\Styles\Generic.xaml">
+    <Page Update="Themes\Generic.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ShellView.xaml">

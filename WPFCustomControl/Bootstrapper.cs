@@ -1,12 +1,12 @@
 ﻿using Caliburn.Micro;
-using WPFCustomControl.LoggerUtils;
-using WPFCustomControl.ViewModels;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
+using WPFCustomControl.LoggerUtils;
+using WPFCustomControl.ViewModels;
 
 namespace WPFCustomControl;
 

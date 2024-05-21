@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-using WPFCustomControl.LoggerUtils;
 
 namespace WPFCustomControl.Themes;
 
@@ -15,16 +14,17 @@ public class CustomWindow : Window
         DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomWindow), new FrameworkPropertyMetadata(typeof(CustomWindow)));
     }
 
+    [DllImport("user32")]
+    internal static extern IntPtr MonitorFromWindow([In] IntPtr handle, [In] Int32 flags);
+
     [DllImport("user32", EntryPoint = "GetMonitorInfoW", ExactSpelling = true, CharSet = CharSet.Unicode)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool GetMonitorInfo([In] IntPtr hMonitor, [Out] MONITORINFO lpmi);
 
-    [DllImport("user32")]
-    internal static extern IntPtr MonitorFromWindow([In] IntPtr handle, [In] int flags);
-
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+    internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+        Int32 X, Int32 Y, Int32 cx, Int32 cy, UInt32 uFlags);
 
     /// <summary>
     /// 这个窗口的handle
@@ -42,9 +42,9 @@ public class CustomWindow : Window
             CornerRadius = new CornerRadius(0),
             GlassFrameThickness = new Thickness(0),
         };
-        //用WindowChrome的方式来制作自定义窗口
+        //用WindowChrome的方式来制作自定义窗口，这样可以保留Resize的功能
         System.Windows.Shell.WindowChrome.SetWindowChrome(this, windowChrome);
-        AllowsTransparency = false;
+        //设置为无边框窗口,不然最大化时显示不正确
         WindowStyle = WindowStyle.None;
     }
 
@@ -162,6 +162,7 @@ public class CustomWindow : Window
         base.OnStateChanged(e);
         if (WindowState == WindowState.Maximized)
         {
+            //根据显示器找到左上角的坐标以及窗口最大化时的宽和高，再用win32的函数设置位置
             IntPtr monitor = MonitorFromWindow(_handle, 0x00000002);
             var monitorInfo = new MONITORINFO();
             GetMonitorInfo(monitor, monitorInfo);
@@ -169,110 +170,31 @@ public class CustomWindow : Window
             var y = monitorInfo.rcMonitor.top;
             var cx = Math.Abs(monitorInfo.rcMonitor.right - x);
             var cy = Math.Abs(monitorInfo.rcMonitor.bottom - y);
-            Logger.Debug($"x:{x},y:{y},cx:{cx},cy:{cy}");
             SetWindowPos(_handle, new IntPtr(-2), x, y, cx, cy, 0x0040);
         }
-        BorderThickness = new Thickness(0);
     }
 }
 
+/// <summary>
+/// 传入win32函数需要的结构体
+/// </summary>
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 internal class MONITORINFO
 {
-    public int cbSize = Marshal.SizeOf(typeof(MONITORINFO));
-    public RECT rcMonitor = new RECT();
-    public RECT rcWork = new RECT();
-    public int dwFlags = 0;
-
-    public enum MonitorOptions : uint
-    {
-        MONITOR_DEFAULTTONULL = 0x00000000,
-        MONITOR_DEFAULTTOPRIMARY = 0x00000001,
-        MONITOR_DEFAULTTONEAREST = 0x00000002
-    }
+    public Int32 cbSize = Marshal.SizeOf(typeof(MONITORINFO));
+    public RECT rcMonitor = new();
+    public RECT rcWork = new();
+    public Int32 dwFlags = 0;
 }
 
+/// <summary>
+/// 传入win32函数需要的结构体
+/// </summary>
 [StructLayout(LayoutKind.Sequential, Pack = 0)]
-internal struct RECT
+internal struct RECT(Int32 left, Int32 top, Int32 right, Int32 bottom)
 {
-    public int left;
-    public int top;
-    public int right;
-    public int bottom;
-
-    public static readonly RECT Empty = new RECT();
-
-    public int Width
-    {
-        get { return Math.Abs(right - left); }  // Abs needed for BIDI OS
-    }
-
-    public int Height
-    {
-        get { return bottom - top; }
-    }
-
-    public RECT(int left, int top, int right, int bottom)
-    {
-        this.left = left;
-        this.top = top;
-        this.right = right;
-        this.bottom = bottom;
-    }
-
-    public RECT(RECT rcSrc)
-    {
-        left = rcSrc.left;
-        top = rcSrc.top;
-        right = rcSrc.right;
-        bottom = rcSrc.bottom;
-    }
-
-    public bool IsEmpty
-    {
-        get
-        {
-            // BUGBUG : On Bidi OS (hebrew arabic) left > right
-            return left >= right || top >= bottom;
-        }
-    }
-
-    public override string ToString()
-    {
-        if (this == Empty)
-            return "RECT {Empty}";
-        return "RECT { left : " + left + " / top : " + top + " / right : " + right + " / bottom : " + bottom + " }";
-    }
-
-    /// <summary> Determine if 2 RECT are equal (deep compare) </summary>
-    public override bool Equals(object obj)
-    {
-        if (!(obj is Rect)) { return false; }
-        return (this == (RECT)obj);
-    }
-
-    /// <summary>Return the HashCode for this struct (not garanteed to be unique)</summary>
-    public override int GetHashCode()
-    {
-        return left.GetHashCode() + top.GetHashCode() + right.GetHashCode() + bottom.GetHashCode();
-    }
-
-    public static bool operator ==(RECT rect1, RECT rect2)
-    {
-        return (rect1.left == rect2.left && rect1.top == rect2.top && rect1.right == rect2.right && rect1.bottom == rect2.bottom);
-    }
-
-    public static bool operator !=(RECT rect1, RECT rect2)
-    {
-        return !(rect1 == rect2);
-    }
-}
-
-[StructLayout(LayoutKind.Sequential)]
-internal struct MARGINS
-{
-    public int leftWidth;
-    public int rightWidth;
-    public int topHeight;
-    public int bottomHeight;
+    public Int32 left = left;
+    public Int32 top = top;
+    public Int32 right = right;
+    public Int32 bottom = bottom;
 }

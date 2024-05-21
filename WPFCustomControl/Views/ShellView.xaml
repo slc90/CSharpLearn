@@ -8,12 +8,30 @@
                              mc:Ignorable="d"
                              xmlns:viewModels="clr-namespace:WPFCustomControl.ViewModels"
                              d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,IsDesignTimeCreatable=False}"
-                             Height="450"
-                             Width="800">
+                             Width="800"
+                             Height="600">
     <customControls:CustomWindow.TitleBarContent>
-        <Button Content="Title"
-                Background="Green"></Button>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="First"
+                       Background="Red"
+                       Grid.Column="0"
+                       HorizontalAlignment="Left"></TextBlock>
+            <TextBlock  Grid.Column="1"
+                        Background="Green"></TextBlock>
+            <TextBlock Text="Last"
+                       Background="Blue"
+                       Grid.Column="2"
+                       HorizontalAlignment="Right"></TextBlock>
+        </Grid>
+
     </customControls:CustomWindow.TitleBarContent>
-    <Button Content="123"
-            Background="Blue"></Button>
+    <Grid>
+        <Button Content="123"
+                Background="Blue"></Button>
+    </Grid>
 </customControls:CustomWindow>

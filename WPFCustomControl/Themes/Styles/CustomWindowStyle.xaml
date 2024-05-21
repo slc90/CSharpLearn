@@ -3,12 +3,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="{x:Type customControls:CustomWindow}">
-        <!--设置为无边框窗口-->
-        <Setter Property="WindowStyle"
-                Value="None"></Setter>
-        <!--不然顶部有个留白-->
-        <Setter Property="AllowsTransparency"
-                Value="True"></Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type customControls:CustomWindow}">

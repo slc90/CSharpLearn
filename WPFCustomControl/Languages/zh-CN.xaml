@@ -3,5 +3,5 @@
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
     <!--测试-->
     <system:String x:Key="ErrorPrompt">请输入1-9999的整数</system:String>
-
+    <system:String x:Key="ButtonBehaviourTest">Behaviour测试</system:String>
 </ResourceDictionary>

@@ -5,8 +5,10 @@
                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                              xmlns:customControls="clr-namespace:WPFCustomControl.Themes"
                              xmlns:cal="http://caliburnmicro.com"
+                             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                              mc:Ignorable="d"
                              xmlns:viewModels="clr-namespace:WPFCustomControl.ViewModels"
+                             xmlns:behaviours="clr-namespace:WPFCustomControl.Behaviours"
                              d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,IsDesignTimeCreatable=False}">
     <customControls:CustomWindow.TitleBarContent>
         <Grid>
@@ -25,7 +27,22 @@
             </ComboBox>
         </Grid>
     </customControls:CustomWindow.TitleBarContent>
-    <customControls:NumericUpAndDown Grid.Row="1"
-                                     NumericalContent="{Binding Number}"
-                                     Prompt="{DynamicResource ErrorPrompt}"></customControls:NumericUpAndDown>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <customControls:NumericUpAndDown Grid.Row="0"
+                                         NumericalContent="{Binding Number}"
+                                         Prompt="{DynamicResource ErrorPrompt}"></customControls:NumericUpAndDown>
+        <Button Content="这个按钮添加了Behaviour"
+                Grid.Row="1">
+            <b:Interaction.Behaviors>
+                <behaviours:ButtonBehaviour />
+            </b:Interaction.Behaviors>
+        </Button>
+        <Button Content="这个按钮没添加Behaviour"
+                Grid.Row="2"></Button>
+    </Grid>
 </customControls:CustomWindow>

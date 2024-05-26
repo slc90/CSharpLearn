@@ -21,7 +21,7 @@ public class ShellViewModel : Conductor<IScreen>
     public void OnLanguageChanged()
     {
         Logger.Debug($"Language:{Language}");
-        ((App)Application.Current).ChangeCulture(Language);
+        ((App)Application.Current).SwitchLanguage(Language);
     }
 
     /// <summary>

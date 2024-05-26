@@ -34,3 +34,7 @@ ShellView中的Window也可以换成CustomWindow
 1. 能够输入数字以及通过+-按钮增减内容
 # 添加实时中英文切换
 1. 方法是清空当前资源字典，然后添加一份新的对应的语言的资源xaml，绑定只能用DynamicResource
+2. zh-CN.xaml和en-US.xaml要设置成Resource
+# Behaviour 
+有时需要给控件添加一些行为逻辑，但是又不是同一类的控件都需要，只是在有些场景下需要。此时就可以使用Behaviour类来为某类控件添加一些行为，
+然后在xaml里给需要的控件添加。

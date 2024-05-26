@@ -17,6 +17,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Page Remove="Languages\en-US.xaml" />
+	  <Page Remove="Languages\zh-CN.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="LoggerUtils\log4net.config">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</EmbeddedResource>
@@ -29,5 +34,10 @@
 		<PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
 		<PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
 		<PackageReference Include="System.Runtime.WindowsRuntime" Version="4.7.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Languages\en-US.xaml" />
+	  <Resource Include="Languages\zh-CN.xaml" />
 	</ItemGroup>
 </Project>

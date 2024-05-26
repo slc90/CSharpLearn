@@ -11,23 +11,21 @@
     <customControls:CustomWindow.TitleBarContent>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <TextBlock Text="First"
                        Background="Red"
                        Grid.Column="0"
-                       HorizontalAlignment="Left"></TextBlock>
-            <TextBlock  Grid.Column="1"
-                        Background="Green"></TextBlock>
-            <TextBlock Text="Last"
-                       Background="Blue"
-                       Grid.Column="2"
-                       HorizontalAlignment="Right"></TextBlock>
+                       HorizontalAlignment="Stretch"></TextBlock>
+            <ComboBox Grid.Column="1"
+                      HorizontalAlignment="Right"
+                      ItemsSource="{Binding LanguageList}"
+                      SelectedItem="{Binding Language}">
+            </ComboBox>
         </Grid>
     </customControls:CustomWindow.TitleBarContent>
     <customControls:NumericUpAndDown Grid.Row="1"
-                                     NumericalContent="12"
-                                     Prompt="请输入1-99999之间数值"></customControls:NumericUpAndDown>
+                                     NumericalContent="{Binding Number}"
+                                     Prompt="{DynamicResource ErrorPrompt}"></customControls:NumericUpAndDown>
 </customControls:CustomWindow>

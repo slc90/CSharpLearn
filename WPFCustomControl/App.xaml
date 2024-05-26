@@ -8,6 +8,8 @@
                 <ResourceDictionary>
                     <local:Bootstrapper x:Key="Bootstrapper" />
                 </ResourceDictionary>
+                <!--添加程序启动时的默认语言-->
+                <ResourceDictionary Source="pack://application:,,,/WPFCustomControl;component/Languages/zh-CN.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

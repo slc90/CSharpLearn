@@ -32,3 +32,5 @@ ShellView中的Window也可以换成CustomWindow
 2. 最小化、最大化、关闭、拖动
 # NumericUpAndDown
 1. 能够输入数字以及通过+-按钮增减内容
+# 添加实时中英文切换
+1. 方法是清空当前资源字典，然后添加一份新的对应的语言的资源xaml，绑定只能用DynamicResource

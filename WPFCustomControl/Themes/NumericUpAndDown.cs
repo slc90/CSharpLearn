@@ -32,7 +32,8 @@ public class NumericUpAndDown : Control
     /// 注册一个Callback,TextBox内容变化时触发
     /// </summary>
     public static readonly DependencyProperty NumericalContentProperty =
-        DependencyProperty.Register("NumericalContentProperty", typeof(Int32), typeof(NumericUpAndDown), new PropertyMetadata(0, OnIntegerValueChanged));
+        DependencyProperty.Register("NumericalContent", typeof(Int32), typeof(NumericUpAndDown),
+            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIntegerValueChanged));
 
     private static void OnIntegerValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -58,7 +59,7 @@ public class NumericUpAndDown : Control
     }
 
     public static readonly DependencyProperty PromptProperty =
-        DependencyProperty.Register("PromptProperty", typeof(string), typeof(NumericUpAndDown), new PropertyMetadata(""));
+        DependencyProperty.Register("Prompt", typeof(string), typeof(NumericUpAndDown), new PropertyMetadata(""));
 
     /// <summary>
     /// 显示提示语的TextBlock

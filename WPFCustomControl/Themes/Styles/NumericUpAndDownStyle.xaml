@@ -22,7 +22,7 @@
                     <TextBox  x:Name="PART_TextContent"
                               TextAlignment="Center"
                               Grid.Column="1"
-                              Text="{Binding NumericalContent,RelativeSource={RelativeSource TemplatedParent}}"></TextBox>
+                              Text="{TemplateBinding NumericalContent}"></TextBox>
                     <Button  x:Name="PART_Up"
                              Content="+"
                              Grid.Column="2"></Button>
@@ -30,7 +30,7 @@
                 <!--第二行是填写错误时的提示语-->
                 <TextBlock x:Name="PART_Prompt"
                            Grid.Row="1"
-                           Text="{Binding Prompt,RelativeSource={RelativeSource TemplatedParent}}"
+                           Text="{TemplateBinding Prompt}"
                            Visibility="Collapsed"
                            TextAlignment="Center"
                            Foreground="Red"></TextBlock>

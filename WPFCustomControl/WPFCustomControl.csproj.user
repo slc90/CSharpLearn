@@ -7,6 +7,12 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Resource Update="Languages\en-US.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Update="Languages\zh-CN.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Update="Themes\Styles\NumericUpAndDownStyle.xaml">
       <SubType>Designer</SubType>
     </Page>

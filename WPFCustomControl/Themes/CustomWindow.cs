@@ -14,23 +14,6 @@ public class CustomWindow : Window
         DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomWindow), new FrameworkPropertyMetadata(typeof(CustomWindow)));
     }
 
-    [DllImport("user32")]
-    internal static extern IntPtr MonitorFromWindow([In] IntPtr handle, [In] Int32 flags);
-
-    [DllImport("user32", EntryPoint = "GetMonitorInfoW", ExactSpelling = true, CharSet = CharSet.Unicode)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool GetMonitorInfo([In] IntPtr hMonitor, [Out] MONITORINFO lpmi);
-
-    [DllImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
-        Int32 X, Int32 Y, Int32 cx, Int32 cy, UInt32 uFlags);
-
-    /// <summary>
-    /// 这个窗口的handle
-    /// </summary>
-    private IntPtr _handle;
-
     public CustomWindow()
     {
         var windowChrome = new System.Windows.Shell.WindowChrome
@@ -47,6 +30,23 @@ public class CustomWindow : Window
         //设置为无边框窗口,不然最大化时显示不正确
         WindowStyle = WindowStyle.None;
     }
+
+    [DllImport("user32")]
+    internal static extern IntPtr MonitorFromWindow([In] IntPtr handle, [In] Int32 flags);
+
+    [DllImport("user32", EntryPoint = "GetMonitorInfoW", ExactSpelling = true, CharSet = CharSet.Unicode)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool GetMonitorInfo([In] IntPtr hMonitor, [Out] MONITORINFO lpmi);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+        Int32 X, Int32 Y, Int32 cx, Int32 cy, UInt32 uFlags);
+
+    /// <summary>
+    /// 这个窗口的handle
+    /// </summary>
+    private IntPtr _handle;
 
     /// <summary>
     /// xaml中Template被应用时触发

@@ -7,9 +7,7 @@
                              xmlns:cal="http://caliburnmicro.com"
                              mc:Ignorable="d"
                              xmlns:viewModels="clr-namespace:WPFCustomControl.ViewModels"
-                             d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,IsDesignTimeCreatable=False}"
-                             Width="800"
-                             Height="600">
+                             d:DataContext="{d:DesignInstance Type=viewModels:ShellViewModel,IsDesignTimeCreatable=False}">
     <customControls:CustomWindow.TitleBarContent>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -28,10 +26,8 @@
                        Grid.Column="2"
                        HorizontalAlignment="Right"></TextBlock>
         </Grid>
-
     </customControls:CustomWindow.TitleBarContent>
-    <Grid>
-        <Button Content="123"
-                Background="Blue"></Button>
-    </Grid>
+    <customControls:NumericUpAndDown Grid.Row="1"
+                                     NumericalContent="12"
+                                     Prompt="请输入1-99999之间数值"></customControls:NumericUpAndDown>
 </customControls:CustomWindow>

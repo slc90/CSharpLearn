@@ -2,41 +2,42 @@
                     xmlns:customControls="clr-namespace:WPFCustomControl.Themes"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <ControlTemplate  x:Key="DefaultWindowStyle"
+                      TargetType="{x:Type customControls:CustomWindow}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <!--标题栏-->
+                <RowDefinition Height="auto"></RowDefinition>
+                <!--内容-->
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ContentControl Grid.Column="0"
+                                Content="{Binding TitleBarContent,RelativeSource={RelativeSource TemplatedParent}}"
+                                HorizontalAlignment="Stretch"></ContentControl>
+                <!--最小化，最大化和关闭按钮-->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <Button  x:Name="PART_MinButton"
+                             Content="Min"></Button>
+                    <Button  x:Name="PART_MaxButton"
+                             Content="Max"></Button>
+                    <Button  x:Name="PART_CloseButton"
+                             Content="Close"></Button>
+                </StackPanel>
+            </Grid>
+            <ContentPresenter Grid.Row="1"></ContentPresenter>
+        </Grid>
+    </ControlTemplate>
+
     <Style TargetType="{x:Type customControls:CustomWindow}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type customControls:CustomWindow}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <!--标题栏-->
-                            <RowDefinition Height="auto"></RowDefinition>
-                            <!--内容-->
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition Width="auto"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                                            Content="{Binding TitleBarContent,RelativeSource={RelativeSource TemplatedParent}}"
-                                            HorizontalAlignment="Stretch"></ContentControl>
-                            <!--最小化，最大化和关闭按钮-->
-                            <StackPanel Grid.Column="1"
-                                        Orientation="Horizontal"
-                                        HorizontalAlignment="Right">
-                                <Button  x:Name="PART_MinButton"
-                                         Content="Min"></Button>
-                                <Button  x:Name="PART_MaxButton"
-                                         Content="Max"></Button>
-                                <Button  x:Name="PART_CloseButton"
-                                         Content="Close"></Button>
-                            </StackPanel>
-                        </Grid>
-                        <ContentPresenter Grid.Row="1"></ContentPresenter>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
+        <Setter Property="Template"
+                Value="{StaticResource DefaultWindowStyle}">
         </Setter>
     </Style>
 </ResourceDictionary>

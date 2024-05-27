@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaliburnMicroLearn", "Calib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFCustomControl", "WPFCustomControl\WPFCustomControl.csproj", "{F252ADDE-AF5F-4899-9C71-432E69A11EBA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkiaLearn", "SkiaLearn\SkiaLearn.csproj", "{71492966-A828-447D-A160-86EF35A9ACE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F252ADDE-AF5F-4899-9C71-432E69A11EBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F252ADDE-AF5F-4899-9C71-432E69A11EBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F252ADDE-AF5F-4899-9C71-432E69A11EBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71492966-A828-447D-A160-86EF35A9ACE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71492966-A828-447D-A160-86EF35A9ACE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71492966-A828-447D-A160-86EF35A9ACE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71492966-A828-447D-A160-86EF35A9ACE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
